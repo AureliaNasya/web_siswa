@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\AdminModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
 
 class AuthController extends Controller
 {
@@ -24,14 +25,23 @@ class AuthController extends Controller
 
         $admin = AdminModel::where('username', $username)->first();
 
-        if($admin && Hash::check($password, $admin->password)) {
-            Auth::login($admin);
+        /*
+        if (!Auth::attempt([
+            fn (Builder $query) => $query->where('username', $request->user_email)->orWhere('password', $request->password)
+        ]))
+            return redirect()->back()->with('error', 'Username or Password is Wrong!');
+
+        return redirect('/admin/dashboard');
+        */
+
+        if($admin && Hash::check($request->password, $admin->password)) {
+            $token = $admin->createToken('auth_token')->plainTextToken;
             return redirect('/admin/dashboard');
         }
-
-        return redirect()->back()->with('error', 'Username atau Password salah');
+        return redirect()->back()->with('error', 'Username or Password is Wrong!'); 
     }
 
+    /*
     public function logout(Request $request) {
         if($request->id !== Auth::user()?->id) {
             return abort(401);
@@ -40,6 +50,11 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        return redirect('/');
+    }
+    */
+    public function logout(Request $request) {
+        $request->user()->tokens()->delete();
         return redirect('/');
     }
 }

@@ -12,7 +12,5 @@ class AdminModel extends Model
 {
     use HasFactory, HasUlids, SanctumHasApiTokens;
 
-    protected $guarded = 'admin';
-    protected $fillable = ['nama_adm', 'username', 'password'];
-    protected $hidden = ['password'];
+    protected $guarded = ['id_adm'];
 }

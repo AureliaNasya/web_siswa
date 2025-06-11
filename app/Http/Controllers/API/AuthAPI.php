@@ -33,6 +33,7 @@ class AuthAPI extends Controller
             'id_adm' => Auth::user()->id_adm,
             'nama_adm' => Auth::user()->nama_adm,
             'username' => Auth::user()->username,
+            'password' => Auth::user()->password,
             'token_type' => 'Bearer',
             'token' => $token->planTextToken
         ]);
