@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AuthAPI;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\SiswaController;
 |
 */
 
-Route::middleware(['guest'])->group(function() {
+/*Route::middleware(['guest'])->group(function() {
     Route::get('/', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/', [AuthController::class, 'auth'])->name('authenticate');
 });
@@ -49,3 +50,11 @@ Route::middleware(['auth'])->group(function() {
         });
     });
 });
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::post('/login', [AuthAPI::class, 'login']);
+Route::post('/logout', [AuthAPI::class, 'logout']);
