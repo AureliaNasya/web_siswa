@@ -5,12 +5,38 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AdminModel;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthAPI extends Controller
 {
+    public function login(Request $request) {
+        $request -> validate([
+            'username' => ['required', 'string'],
+            'password' => ['requied', 'string']
+        ]);
+
+        $admin = AdminModel::where('username', $request->username)->first();
+        if(!$admin || !Hash::check($request->password, $admin->password)) {
+            return response()->json([
+                'message' => 'Username atau Password Salah'
+            ], 422);
+        }
+        $token = $admin->createToken('main')->plainTextToken;
+        return response()->json([
+            'user' => $admin,
+            'token' => $token
+        ]);
+    
+    }
+
+    public function logout(Request $request) {
+        $admin = $request->user();
+        $admin->currentAccessToken()->delete();
+        return redirect('/login');
+    }
+    /*
     public function auth(Request $request) {
         $validator = Validator::make($request->all(), [
             'username' => ['required', 'string'],
@@ -38,4 +64,5 @@ class AuthAPI extends Controller
             'token' => $token->planTextToken
         ]);
     }
+    */
 }

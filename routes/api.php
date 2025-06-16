@@ -3,11 +3,6 @@
 use App\Http\Controllers\API\AuthAPI;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KotaController;
-use App\Http\Controllers\SiswaController;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -52,9 +47,7 @@ Route::middleware(['auth'])->group(function() {
 });
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::post('/login', [AuthAPI::class, 'login']);
-Route::post('/logout', [AuthAPI::class, 'logout']);
